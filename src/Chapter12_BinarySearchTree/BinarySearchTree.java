@@ -57,7 +57,7 @@ public class BinarySearchTree {
 
     public void setRightChild(BinarySearchTree rightChild) throws Exception {
         if(rightChild != null && rightChild.key < key){  //不符合二叉搜索树的性质
-            throw new InvalidKeyException("不合法的右子结点,关键字小于当前结点");
+            throw new InvalidKeyException("不合法的右子结点,关键字小于其父结点");
         }
         this.rightChild = rightChild;
         rightChild.setParent(this);
@@ -68,7 +68,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 设置父结点的方法被封装成私有方法,并讲设置父节点的操作在设置某个结点的左子结点和右子结点时同时进行
+     * 设置父结点的方法被封装成私有方法,并将设置父节点的操作在设置某个结点的左子结点和右子结点时同时进行
      * @param parent
      */
     private void setParent(BinarySearchTree parent) {
@@ -172,27 +172,67 @@ public class BinarySearchTree {
     }
 
     /**
-     * 查找树中具有最小关键字的结点,返回以该结点为根的子树
+     * 查找一个二叉搜索树中具有的关键字最小的结点,返回以该结点为根的子树
+     * @param treeNode &nbsp 需要查找其最小关键字结点的二叉搜索树
      * @return
      */
-    public BinarySearchTree minimum(){
-        BinarySearchTree cur = this;
-        while(cur.leftChild != null){
-            cur = cur.leftChild;
+    public static BinarySearchTree minimum(BinarySearchTree treeNode){
+        while(treeNode.leftChild != null){
+            treeNode = treeNode.leftChild;
         }
-        return cur;
+        return treeNode;
     }
 
     /**
-     * 查找树中具有最大关键字的结点,返回以该结点为根的子树
+     * 查找一个二叉搜索树中具有的关键字最大的结点,返回以该结点为根的子树
+     * @param treeNode &nbsp 需要查找其最大关键字结点的二叉搜索树
      * @return
      */
-    public BinarySearchTree maximum(){
-        BinarySearchTree cur = this;
-        while(cur.rightChild != null){
-            cur = cur.rightChild;
+    public static BinarySearchTree maximum(BinarySearchTree treeNode){
+        while(treeNode.rightChild != null){
+            treeNode = treeNode.rightChild;
         }
-        return cur;
+        return treeNode;
+    }
+
+    /**
+     * 查找一个二叉搜索树中某个结点在中序遍历序列中的后继结点
+     * 如果该结点存在后继结点,则返回以该后继结点为根的子树,如果该结点没有后继结点则返回NULL
+     * @param treeNode
+     * @return
+     */
+    public static BinarySearchTree successor(BinarySearchTree treeNode){
+        if(treeNode.rightChild != null){  //该结点有右子树
+            return minimum(treeNode.rightChild);  //返回右子树中关键字最小的结点
+        }else{    //该结点没有右子树
+            BinarySearchTree par = treeNode.parent;
+            //往上走,找到上面最近的满足接下来条件的结点:该结点是treeNode的祖先,且该结点的左孩子是treeNode或该结点的左孩子也是treeNode的祖先
+            while(par != null && treeNode == par.rightChild){
+                treeNode = par;
+                par = treeNode.parent;
+            }
+            return par;
+        }
+    }
+
+    /**
+     * 查找一个二叉搜索树中某个结点在中序遍历序列中的前驱结点
+     * 如果该结点存在前驱结点,则返回以该前驱结点为根的子树,如果该结点没有前驱结点则返回NULL
+     * @param treeNode
+     * @return
+     */
+    public static BinarySearchTree predecessor(BinarySearchTree treeNode){
+        if(treeNode.leftChild != null){  //该结点有左子树
+            return maximum(treeNode.leftChild);  //返回左子树中关键字最大的结点
+        }else{
+            BinarySearchTree par = treeNode.parent;
+            //往上走,找到上面最近的满足接下来条件的结点:该结点是treeNode的祖先,且该结点的右孩子是treeNode或该结点的右孩子也是treeNode的祖先
+            while(par != null && treeNode == par.leftChild){
+                treeNode = par;
+                par = treeNode.parent;
+            }
+            return par;
+        }
     }
 
 }

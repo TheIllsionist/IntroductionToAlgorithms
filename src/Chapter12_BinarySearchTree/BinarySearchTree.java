@@ -115,7 +115,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 非递归先序遍历二叉搜索树
+     * 非递归先序遍历以当前对象为根的二叉搜索树
      */
     public void preOrderTreeWork(){
         BinarySearchTree cur = this;
@@ -134,7 +134,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 非递归后序遍历二叉搜索树
+     * 非递归后序遍历以当前对象为根的二叉搜索树
      */
     public void postOrderTreeWord(){
         BinarySearchTree h = this;  //刚刚弹出的结点
@@ -155,7 +155,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 根据关键字key搜索二叉搜索树结点
+     * 在当前子树中根据关键字key搜索二叉搜索树结点
      * 如果树中存在关键字为key的结点,则返回以该结点为根的子树,如果没有则返回null
      * @param key &nbsp 给定的关键字
      * @return
@@ -172,64 +172,60 @@ public class BinarySearchTree {
     }
 
     /**
-     * 查找一个二叉搜索树中具有的关键字最小的结点,返回以该结点为根的子树
-     * @param treeNode &nbsp 需要查找其最小关键字结点的二叉搜索树
+     * 查找以当前结点为根的二叉搜索树中关键字最小的结点,返回以该结点为根的子树
      * @return
      */
-    public static BinarySearchTree minimum(BinarySearchTree treeNode){
-        while(treeNode.leftChild != null){
-            treeNode = treeNode.leftChild;
+    public BinarySearchTree minimum(){
+        BinarySearchTree node = this;
+        while(node.leftChild != null){  //其实就是当前子树中的最左结点
+            node = node.leftChild;
         }
-        return treeNode;
+        return node;
     }
 
     /**
-     * 查找一个二叉搜索树中具有的关键字最大的结点,返回以该结点为根的子树
-     * @param treeNode &nbsp 需要查找其最大关键字结点的二叉搜索树
+     * 查找以当前结点为根的二叉搜索树中关键字最大的结点,返回以该结点为根的子树
      * @return
      */
-    public static BinarySearchTree maximum(BinarySearchTree treeNode){
-        while(treeNode.rightChild != null){
-            treeNode = treeNode.rightChild;
+    public BinarySearchTree maximum(){
+        BinarySearchTree node = this;
+        while(node.rightChild != null){  //其实就是当前子树中的最右结点
+            node = node.rightChild;
         }
-        return treeNode;
+        return node;
     }
 
     /**
-     * 查找一个二叉搜索树中某个结点在中序遍历序列中的后继结点
-     * 如果该结点存在后继结点,则返回以该后继结点为根的子树,如果该结点没有后继结点则返回NULL
-     * @param treeNode
+     * 查找当前结点在其所在的二叉搜索树中的后继结点
      * @return
      */
-    public static BinarySearchTree successor(BinarySearchTree treeNode){
-        if(treeNode.rightChild != null){  //该结点有右子树
-            return minimum(treeNode.rightChild);  //返回右子树中关键字最小的结点
-        }else{    //该结点没有右子树
-            BinarySearchTree par = treeNode.parent;
-            //往上走,找到上面最近的满足接下来条件的结点:该结点是treeNode的祖先,且该结点的左孩子是treeNode或该结点的左孩子也是treeNode的祖先
-            while(par != null && treeNode == par.rightChild){
-                treeNode = par;
-                par = treeNode.parent;
+    public BinarySearchTree successor(){
+        BinarySearchTree cur = this;
+        if(this.rightChild != null){  //右子树不为空,则其后继就是右子树中的最左结点
+            return rightChild.minimum();
+        }else{  //没有右子树,则当前结点是其后继结点左子树中的最右结点
+            BinarySearchTree par = cur.parent;
+            while(par != null && cur == par.rightChild){
+                cur = par;
+                par = cur.parent;
             }
             return par;
         }
     }
 
     /**
-     * 查找一个二叉搜索树中某个结点在中序遍历序列中的前驱结点
-     * 如果该结点存在前驱结点,则返回以该前驱结点为根的子树,如果该结点没有前驱结点则返回NULL
-     * @param treeNode
+     * 查找当前子树在其所在的二叉搜索树中的前驱结点
      * @return
      */
-    public static BinarySearchTree predecessor(BinarySearchTree treeNode){
-        if(treeNode.leftChild != null){  //该结点有左子树
-            return maximum(treeNode.leftChild);  //返回左子树中关键字最大的结点
-        }else{
-            BinarySearchTree par = treeNode.parent;
-            //往上走,找到上面最近的满足接下来条件的结点:该结点是treeNode的祖先,且该结点的右孩子是treeNode或该结点的右孩子也是treeNode的祖先
-            while(par != null && treeNode == par.leftChild){
-                treeNode = par;
-                par = treeNode.parent;
+    public BinarySearchTree predecessor(){
+        BinarySearchTree cur = this;
+        if(cur.leftChild != null){  //左子树不为空,则其前驱就是左子树中的最右结点
+            return cur.leftChild.maximum();
+        }else{  //没有左子树,则当前结点是其前驱结点右子树中的最左结点
+            BinarySearchTree par = cur.parent;
+            while(par != null && cur == par.leftChild){
+                cur = par;
+                par = cur.parent;
             }
             return par;
         }
